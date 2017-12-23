@@ -1,0 +1,3 @@
+---
+- name: Deploy application WAR into local Tomcat
+  copy: src={{ war_path }}/{{ war_name }} dest={{ lookup('env', 'CATALINA_HOME') }}/webapps/{{ war_name }}
