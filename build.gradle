@@ -34,6 +34,7 @@ ext {
     kotlinVersion = "1.2.10"
     logbackVersion = "1.2.3"
     springVersion = "5.0.2.RELEASE"
+    jacksonVersion = "2.9.3"
 }
 
 repositories {
@@ -46,4 +47,6 @@ dependencies {
     compile "ch.qos.logback:logback-classic:$logbackVersion"
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-webmvc:$springVersion"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+
 }
