@@ -11,13 +11,7 @@ interface BookRepository {
 }
 
 @Repository
-class BookRepositoryImpl : BookRepository {
-
-    private val books: MutableList<Book> = mutableListOf(
-            Book("1", "Spring REST"),
-            Book("2", "Pro Spring 5"),
-            Book("3", "Spring 5 Recipes")
-    )
+class BookRepositoryImpl(private val books: MutableList<Book>) : BookRepository {
 
     private var lastBookId: Int = books.size
 
