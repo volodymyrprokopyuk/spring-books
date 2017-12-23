@@ -1,14 +1,16 @@
 package org.vld.books.repository
 
+import org.springframework.stereotype.Repository
 import org.vld.books.domain.Book
 
 interface BookRepository {
     fun findAll(): List<Book>
     fun findById(id: String): Book?
     fun save(book: Book): Book
-    fun deleteById(id: String): Boolean
+    fun deleteById(id: String)
 }
 
+@Repository
 class BookRepositoryImpl : BookRepository {
 
     private val books: MutableList<Book> = mutableListOf(
@@ -35,5 +37,7 @@ class BookRepositoryImpl : BookRepository {
         }
     }
 
-    override fun deleteById(id: String) = books.removeIf { it.id == id }
+    override fun deleteById(id: String) {
+        books.removeIf { it.id == id }
+    }
 }
