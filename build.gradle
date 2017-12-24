@@ -1,6 +1,7 @@
 buildscript {
     ext {
         kotlinGradlePluginVersion = "1.2.10"
+        junitPlatformGradlePluginVersion = "1.0.2"
     }
 
     repositories {
@@ -9,6 +10,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradlePluginVersion"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$junitPlatformGradlePluginVersion"
     }
 }
 
@@ -26,15 +28,28 @@ compileTestKotlin {
     }
 }
 
+apply plugin: "org.junit.platform.gradle.plugin"
+
+junitPlatform {
+    filters {
+        engines {
+            include "junit-jupiter"
+        }
+    }
+}
+
 apply plugin: "war"
 
 version "1.0.0"
 
 ext {
     kotlinVersion = "1.2.10"
-    logbackVersion = "1.2.3"
+    junitPlatformVersion = "1.0.2"
+    junitJupiterVersion = "5.0.2"
     springVersion = "5.0.2.RELEASE"
     jacksonVersion = "2.9.3"
+    javaxServletApiVersion = "4.0.0"
+    logbackVersion = "1.2.3"
 }
 
 repositories {
@@ -44,9 +59,60 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    compile "ch.qos.logback:logback-classic:$logbackVersion"
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-webmvc:$springVersion"
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
 
+    testCompile "org.junit.platform:junit-platform-runner:$junitPlatformVersion"
+    testCompile "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testCompile "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
+    testCompile "org.springframework:spring-test:$springVersion"
+
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    testRuntime "org.junit.platform:junit-platform-console-standalone:$junitPlatformVersion"
+    testRuntime "javax.servlet:javax.servlet-api:$javaxServletApiVersion"
 }
+
+// Usage: $ gradle junitPlatformTestConsole -PincludePackage=org.vld.books
+task junitPlatformTestConsole(type: JavaExec) {
+    description = "Runs unit tests with JUnit Platform on console"
+    jvmArgs "-ea"
+    classpath = project.sourceSets.test.runtimeClasspath
+    main = "org.junit.platform.console.ConsoleLauncher"
+    args "--include-engine=junit-jupiter", "--scan-class-path", "--reports-dir=$project.testReportDir"
+    if (project.hasProperty("includePackage")) {
+        args += "--include-package=$includePackage"
+    }
+}
+
+// Integration Tests
+sourceSets {
+    integration {
+        kotlin.srcDir "src/integration/kotlin"
+        resources.srcDir "src/integration/resources"
+    }
+}
+
+dependencies {
+    integrationCompile sourceSets.main.output
+    integrationCompile sourceSets.test.output
+    integrationCompile configurations.compile
+    integrationCompile configurations.testCompile
+    integrationRuntime configurations.runtime
+    integrationRuntime configurations.testRuntime
+}
+
+// Usage: $ gradle junitPlatformIntegrationConsole -PincludePackage=org.vld.books
+task junitPlatformIntegrationConsole(type: JavaExec, group: "verification") {
+    description = "Runs integration tests with JUnit Platform on console"
+    jvmArgs "-ea"
+    classpath = project.sourceSets.integration.runtimeClasspath
+    main = "org.junit.platform.console.ConsoleLauncher"
+    args "--include-engine=junit-jupiter", "--scan-class-path", "--reports-dir=$project.testReportDir"
+    if (project.hasProperty("includePackage")) {
+        args += "--include-package=$includePackage"
+    }
+}
+
+check.dependsOn junitPlatformIntegrationConsole
