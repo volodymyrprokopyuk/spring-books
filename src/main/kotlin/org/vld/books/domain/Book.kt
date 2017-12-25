@@ -1,3 +1,3 @@
 package org.vld.books.domain
 
-data class Book(val id: String, val title: String)
+data class Book(val id: String? = null, val title: String)

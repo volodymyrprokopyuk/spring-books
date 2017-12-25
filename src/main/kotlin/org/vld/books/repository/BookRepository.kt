@@ -17,7 +17,7 @@ class BookRepositoryImpl(private val books: MutableList<Book>) : BookRepository 
 
     override fun findAll(): List<Book> = books
 
-    override fun findById(id: String): Book? = books.first { it.id == id }
+    override fun findById(id: String): Book? = books.firstOrNull { it.id == id }
 
     override fun save(book: Book): Book {
         val bookIndex: Int = books.indexOf(book)

@@ -1,5 +1,7 @@
 package org.vld.books.controller
 
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -10,23 +12,34 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.vld.books.domain.Book
 import org.vld.books.service.BookService
-
 @RestController
 @RequestMapping("/books")
 class BookController(private val bookService: BookService) {
 
     @GetMapping
-    fun findAllBooks(): List<Book> = bookService.findAllBooks()
+    fun findAllBooks(): ResponseEntity<List<Book>> =
+            ResponseEntity(bookService.findAllBooks(), HttpStatus.OK)
 
     @GetMapping("/{id}")
-    fun findBookById(@PathVariable("id") id: String): Book? = bookService.findBookById(id)
+    fun findBookById(@PathVariable("id") id: String): ResponseEntity<Book> {
+        val book: Book? = bookService.findBookById(id)
+        return if (book != null) ResponseEntity(book, HttpStatus.OK)
+        else ResponseEntity(HttpStatus.NOT_FOUND)
+    }
 
     @PostMapping
-    fun createBook(@RequestBody book: Book): Book = bookService.createBook(book)
+    fun createBook(@RequestBody book: Book): ResponseEntity<Book> =
+            ResponseEntity(bookService.createBook(book), HttpStatus.CREATED)
 
-    @PutMapping
-    fun updateBook(@RequestBody book: Book): Book = bookService.updateBook(book)
+    @PutMapping("/{id}")
+    fun updateBook(@PathVariable("id") id: String, @RequestBody book: Book): ResponseEntity<Book> {
+        val existingBook: Book? = bookService.findBookById(id)
+        return if (existingBook != null) ResponseEntity(bookService.updateBook(book.copy(id = id)), HttpStatus.OK)
+        else ResponseEntity(HttpStatus.NOT_FOUND)
+    }
 
     @DeleteMapping("/{id}")
-    fun deleteBook(@PathVariable("id") id: String) = bookService.deleteBookById(id)
+    fun deleteBook(@PathVariable("id") id: String): ResponseEntity<Unit> =
+            ResponseEntity(bookService.deleteBookById(id), HttpStatus.NO_CONTENT)
 }
+
