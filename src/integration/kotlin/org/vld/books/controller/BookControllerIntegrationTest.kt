@@ -116,6 +116,18 @@ class BookControllerIntegrationTest {
         mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonMapper.writeValueAsString(newBook)))
-                .andExpect(status().isBadRequest).andDo(print())
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `Given a list of Books when find all the Books then return the list of Books 200 OK XML`() {
+        mockMvc.perform(get("/books").accept("application/xml;charset=UTF-8"))
+                .andExpect(status().isOk()).andDo(print())
+    }
+
+    @Test
+    fun `Given a Book with id when find the Book by id then return the Book with id 200 OK XML`() {
+        mockMvc.perform(get("/books/{id}", 1).accept("application/xml;charset=UTF-8"))
+                .andExpect(status().isOk())
     }
 }

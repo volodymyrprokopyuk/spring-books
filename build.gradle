@@ -65,6 +65,7 @@ dependencies {
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-webmvc:$springVersion"
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion"
     compile "ch.qos.logback:logback-classic:$logbackVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletApiVersion"
 
@@ -74,8 +75,8 @@ dependencies {
     testCompile "org.springframework:spring-test:$springVersion"
     testCompile "org.assertj:assertj-core:$assertJVersion"
     testCompile "javax.servlet:javax.servlet-api:$javaxServletApiVersion"
-    testCompile "com.jayway.jsonpath:json-path:$jsonPathVersion"
     testCompile "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlin"
+    testCompile "com.jayway.jsonpath:json-path:$jsonPathVersion"
 
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
     testRuntime "org.junit.platform:junit-platform-console-standalone:$junitPlatformVersion"
