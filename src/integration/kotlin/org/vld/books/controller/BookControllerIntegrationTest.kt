@@ -1,5 +1,6 @@
 package org.vld.books.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delet
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
@@ -33,6 +35,8 @@ class BookControllerIntegrationTest {
     private lateinit var webApplicationContext: WebApplicationContext
 
     private lateinit var mockMvc: MockMvc
+
+    private val jsonMapper: ObjectMapper = jacksonObjectMapper()
 
     @BeforeEach
     fun beforeEach() {
@@ -62,7 +66,7 @@ class BookControllerIntegrationTest {
         val newBook = Book(title = "New Book")
         mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(jacksonObjectMapper().writeValueAsString(newBook)))
+                .content(jsonMapper.writeValueAsString(newBook)))
                 .andExpect(status().isCreated())
     }
 
@@ -72,7 +76,7 @@ class BookControllerIntegrationTest {
         val book = Book(title = "New Title")
         mockMvc.perform(put("/books/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(jacksonObjectMapper().writeValueAsString(book)))
+                .content(jsonMapper.writeValueAsString(book)))
                 .andExpect(status().isOk())
     }
 
@@ -81,7 +85,7 @@ class BookControllerIntegrationTest {
         val book = Book(title = "New Title")
         mockMvc.perform(put("/books/{id}", 0).accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(jacksonObjectMapper().writeValueAsString(book)))
+                .content(jsonMapper.writeValueAsString(book)))
                 .andExpect(status().isNotFound())
     }
 
@@ -96,5 +100,22 @@ class BookControllerIntegrationTest {
     fun `Given a non-existing Book when delete the Book then return 204 NO CONTENT`() {
         mockMvc.perform(delete("/books/{id}", 0).accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent())
+    }
+
+    @Test
+    fun `Given a malformed request when create a Book then return 400 BAD REQUEST`() {
+        mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{invalid request}"))
+                .andExpect(status().isBadRequest())
+    }
+
+    @Test
+    fun `Given an invalid request when create a Book then return 400 BAD REQUEST`() {
+        val newBook = Book(id = "", title = "")
+        mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(jsonMapper.writeValueAsString(newBook)))
+                .andExpect(status().isBadRequest).andDo(print())
     }
 }
