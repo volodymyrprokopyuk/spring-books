@@ -2,4 +2,4 @@
 
 set -eu
 
-gradle junitPlatformIntegrationConsole
+gradle junitPlatformIntegrationConsole "$@"

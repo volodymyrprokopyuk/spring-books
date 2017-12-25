@@ -2,4 +2,4 @@
 
 set -eu
 
-gradle war
+gradle war "$@"
