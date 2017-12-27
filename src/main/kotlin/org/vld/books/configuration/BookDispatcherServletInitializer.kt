@@ -1,4 +1,4 @@
-package org.vld.books.config
+package org.vld.books.configuration
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer
 
@@ -6,7 +6,7 @@ class BookDispatcherServletInitializer : AbstractAnnotationConfigDispatcherServl
 
     override fun getRootConfigClasses(): Array<Class<*>>? = null
 
-    override fun getServletConfigClasses(): Array<Class<*>> = arrayOf(BookConfig::class.java)
+    override fun getServletConfigClasses(): Array<Class<*>> = arrayOf(BookWebMvcConfiguration::class.java)
 
     override fun getServletMappings(): Array<String> = arrayOf("/")
 }

@@ -22,12 +22,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import org.vld.books.config.BookConfig
+import org.vld.books.configuration.BookWebMvcConfiguration
 import org.vld.books.domain.Book
 
 @RunWith(SpringRunner::class)
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [BookConfig::class])
+@ContextConfiguration(classes = [BookWebMvcConfiguration::class])
 @WebAppConfiguration
 class BookControllerIntegrationTest {
 

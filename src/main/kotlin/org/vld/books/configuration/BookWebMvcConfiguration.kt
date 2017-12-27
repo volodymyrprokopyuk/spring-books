@@ -1,4 +1,4 @@
-package org.vld.books.config
+package org.vld.books.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -13,7 +13,7 @@ import org.vld.books.interceptor.CorrelationIdInterceptor
 @Configuration
 @ComponentScan(basePackages = ["org.vld.books"])
 @EnableWebMvc
-open class BookConfig : WebMvcConfigurer {
+open class BookWebMvcConfiguration : WebMvcConfigurer {
 
     @Bean
     open fun books(): MutableList<Book> = mutableListOf(
