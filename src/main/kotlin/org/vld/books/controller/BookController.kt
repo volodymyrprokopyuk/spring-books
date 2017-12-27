@@ -1,5 +1,6 @@
 package org.vld.books.controller
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.util.UriComponentsBuilder
 import org.vld.books.domain.Book
 import org.vld.books.domain.validate
 import org.vld.books.service.BookService
@@ -29,9 +31,12 @@ class BookController(private val bookService: BookService) {
     }
 
     @PostMapping
-    fun createBook(@RequestBody book: Book): ResponseEntity<Book> {
+    fun createBook(@RequestBody book: Book, uriBuilder: UriComponentsBuilder): ResponseEntity<Unit> {
         book.validate()
-        return ResponseEntity(bookService.createBook(book), HttpStatus.CREATED)
+        val newBook = bookService.createBook(book)
+        val headers = HttpHeaders()
+        headers.location = uriBuilder.path("/books/{id}").buildAndExpand(newBook.id).toUri()
+        return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
     @PutMapping("/{id}")

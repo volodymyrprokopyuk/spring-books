@@ -2,6 +2,7 @@ package org.vld.books.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -62,12 +63,13 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    fun `Given a new Book when create a new Book then return the created Book with id 201 CREATED`() {
+    fun `Given a new Book when create a new Book then return the created Book Location 201 CREATED`() {
         val newBook = Book(title = "New Book")
-        mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
+        val mvcResult = mockMvc.perform(post("/books").accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonMapper.writeValueAsString(newBook)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isCreated()).andReturn()
+        assertThat(mvcResult.response.getHeader("Location")).startsWith("http://localhost/books/")
     }
 
     @Test
