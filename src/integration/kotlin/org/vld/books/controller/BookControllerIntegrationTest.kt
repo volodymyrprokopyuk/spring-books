@@ -26,6 +26,21 @@ import org.springframework.web.context.WebApplicationContext
 import org.vld.books.configuration.BookWebMvcConfiguration
 import org.vld.books.domain.Book
 
+/*
+#!/usr/bin/env bash
+
+set -eu
+
+access_token=$(curl -s -X POST 'http://localhost:8080/spring-books-1.0.0/oauth/token?grant_type=password&username=bill&password=abc123' \
+    -H 'Accept: application/json;charset=UTF-8' \
+    -u 'trusted-client:secret' | jq -r '.access_token')
+
+echo $access_token
+
+curl -v -X GET "http://localhost:8080/spring-books-1.0.0/books/?access_token=$access_token" \
+    -H 'Accept: application/json;charset=UTF-8' \
+    -H "Authorization: Bearer $access_token"
+*/
 @RunWith(SpringRunner::class)
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [BookWebMvcConfiguration::class])

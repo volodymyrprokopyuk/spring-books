@@ -1,0 +1,5 @@
+package org.vld.books.security
+
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer
+
+class SecurityWebApplicationInitializer : AbstractSecurityWebApplicationInitializer()
